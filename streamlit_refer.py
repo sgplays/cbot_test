@@ -39,7 +39,7 @@ def main():
         st.session_state.processComplete = None
 
     uploaded_files = "howto.docx" #로칼파일 열기
-    openai_api_key = "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" #key
+    openai_api_key = []
 
     # with st.sidebar:
         # uploaded_files =  st.file_uploader("Upload your file",type=['pdf','docx'],accept_multiple_files=True)
