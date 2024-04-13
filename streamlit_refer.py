@@ -1,6 +1,3 @@
-# from dotenv import load_dotenv #openAI API key load
-# load_dotenv() #openAI API key load
-
 import streamlit as st
 import tiktoken
 from loguru import logger
@@ -38,24 +35,21 @@ def main():
     if "processComplete" not in st.session_state:
         st.session_state.processComplete = None
 
-    uploaded_files = "howto.docx" #로칼파일 열기
-    openai_api_key = []
-
-    # with st.sidebar:
-        # uploaded_files =  st.file_uploader("Upload your file",type=['pdf','docx'],accept_multiple_files=True)
-        # openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
-        # process = st.button("Process")
-    # if process:
-        # if not openai_api_key:
-        #     st.info("Please add your OpenAI API key to continue.")
-        #     st.stop()
-    files_text = get_text(uploaded_files)
-    text_chunks = get_text_chunks(files_text)
-    vetorestore = get_vectorstore(text_chunks)
+    with st.sidebar:
+        uploaded_files =  st.file_uploader("Upload your file",type=['pdf','docx'],accept_multiple_files=True)
+        openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
+        process = st.button("Process")
+    if process:
+        if not openai_api_key:
+            st.info("Please add your OpenAI API key to continue.")
+            st.stop()
+        files_text = get_text(uploaded_files)
+        text_chunks = get_text_chunks(files_text)
+        vetorestore = get_vectorstore(text_chunks)
      
-    st.session_state.conversation = get_conversation_chain(vetorestore, openai_api_key) 
+        st.session_state.conversation = get_conversation_chain(vetorestore,openai_api_key) 
 
-    st.session_state.processComplete = True
+        st.session_state.processComplete = True
 
     if 'messages' not in st.session_state:
         st.session_state['messages'] = [{"role": "assistant", 
