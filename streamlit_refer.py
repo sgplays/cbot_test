@@ -24,16 +24,16 @@ from langchain.memory import StreamlitChatMessageHistory
 
 def main():
 
-    loader = Docx2txtLoader("howto.docx")
-    documents = loader.load_and_split()
-    text_chunks = get_text_chunks(documents)
-    vetorestore = get_vectorstore(text_chunks)
-
     st.set_page_config(
     page_title="공유박스AIChatBot",
     page_icon=":books:")
 
     st.title("_안녕하세요? 공유박스  AI 챗봇 입니다 :red[QA Chat]_ :books:")
+
+    loader = Docx2txtLoader("howto.docx")
+    documents = loader.load_and_split()
+    text_chunks = get_text_chunks(documents)
+    vetorestore = get_vectorstore(text_chunks)
 
     if "conversation" not in st.session_state:
         st.session_state.conversation = None
