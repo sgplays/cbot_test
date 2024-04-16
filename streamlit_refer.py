@@ -30,10 +30,10 @@ def main():
 
     st.title("_안녕하세요? 공유박스  AI 챗봇 입니다 :red[QA Chat]_ :books:")
 
-    loader = Docx2txtLoader("howto.docx")
-    documents = loader.load_and_split()
-    text_chunks = get_text_chunks(documents)
-    vetorestore = get_vectorstore(text_chunks)
+    # loader = Docx2txtLoader("howto.docx")
+    # documents = loader.load_and_split()
+    # text_chunks = get_text_chunks(documents)
+    # vetorestore = get_vectorstore(text_chunks)
 
     if "conversation" not in st.session_state:
         st.session_state.conversation = None
@@ -44,21 +44,21 @@ def main():
     if "processComplete" not in st.session_state:
         st.session_state.processComplete = None
 
-    # with st.sidebar:
-    #     uploaded_files =  st.file_uploader("Upload your file",type=['pdf','docx'],accept_multiple_files=True)
-    #     openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
-    #     process = st.button("Process")
-    # if process:
-    #     if not openai_api_key:
-    #         st.info("Please add your OpenAI API key to continue.")
-    #         st.stop()
-    #     files_text = get_text(uploaded_files)
-    #     text_chunks = get_text_chunks(files_text)
-    #     vetorestore = get_vectorstore(text_chunks)
+    with st.sidebar:
+        uploaded_files =  st.file_uploader("Upload your file",type=['pdf','docx'],accept_multiple_files=True)
+        openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
+        process = st.button("Process")
+    if process:
+        if not openai_api_key:
+            st.info("Please add your OpenAI API key to continue.")
+            st.stop()
+        files_text = get_text(uploaded_files)
+        text_chunks = get_text_chunks(files_text)
+        vetorestore = get_vectorstore(text_chunks)
 
-    # st.session_state.conversation = get_conversation_chain(vetorestore,openai_api_key) 
+    st.session_state.conversation = get_conversation_chain(vetorestore,openai_api_key) 
 
-    # st.session_state.processComplete = True
+    st.session_state.processComplete = True
 
     if 'messages' not in st.session_state:
         st.session_state['messages'] = [{"role": "assistant", 
@@ -103,27 +103,27 @@ def tiktoken_len(text):
     tokens = tokenizer.encode(text)
     return len(tokens)
 
-# def get_text(docs):
+def get_text(docs):
 
-#     doc_list = []
+    doc_list = []
     
-#     for doc in docs:
-#         file_name = doc.name  # doc 객체의 이름을 파일 이름으로 사용
-#         with open(file_name, "wb") as file:  # 파일을 doc.name으로 저장
-#             file.write(doc.getvalue())
-#             logger.info(f"Uploaded {file_name}")
-#         if '.pdf' in doc.name:
-#             loader = PyPDFLoader(file_name)
-#             documents = loader.load_and_split()
-#         elif '.docx' in doc.name:
-#             loader = Docx2txtLoader(file_name)
-#             documents = loader.load_and_split()
-#         elif '.pptx' in doc.name:
-#             loader = UnstructuredPowerPointLoader(file_name)
-#             documents = loader.load_and_split()
+    for doc in docs:
+        file_name = doc.name  # doc 객체의 이름을 파일 이름으로 사용
+        with open(file_name, "wb") as file:  # 파일을 doc.name으로 저장
+            file.write(doc.getvalue())
+            logger.info(f"Uploaded {file_name}")
+        if '.pdf' in doc.name:
+            loader = PyPDFLoader(file_name)
+            documents = loader.load_and_split()
+        elif '.docx' in doc.name:
+            loader = Docx2txtLoader(file_name)
+            documents = loader.load_and_split()
+        elif '.pptx' in doc.name:
+            loader = UnstructuredPowerPointLoader(file_name)
+            documents = loader.load_and_split()
 
-#         doc_list.extend(documents)
-#     return doc_list
+        doc_list.extend(documents)
+    return doc_list
 
 def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(
