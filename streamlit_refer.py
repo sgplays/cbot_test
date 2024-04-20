@@ -1,6 +1,3 @@
-# from dotenv import load_dotenv
-# load_dotenv()
-
 import streamlit as st
 import tiktoken
 from loguru import logger
@@ -23,17 +20,11 @@ from langchain.callbacks import get_openai_callback
 from langchain.memory import StreamlitChatMessageHistory
 
 def main():
-
     st.set_page_config(
     page_title="공유박스AIChatBot",
     page_icon=":books:")
 
     st.title("_안녕하세요? 공유박스  AI 챗봇 입니다 :red[QA Chat]_ :books:")
-
-    # loader = Docx2txtLoader("howto.docx")
-    # documents = loader.load_and_split()
-    # text_chunks = get_text_chunks(documents)
-    # vetorestore = get_vectorstore(text_chunks)
 
     if "conversation" not in st.session_state:
         st.session_state.conversation = None
@@ -55,10 +46,10 @@ def main():
         files_text = get_text(uploaded_files)
         text_chunks = get_text_chunks(files_text)
         vetorestore = get_vectorstore(text_chunks)
+     
+        st.session_state.conversation = get_conversation_chain(vetorestore,openai_api_key) 
 
-    st.session_state.conversation = get_conversation_chain(vetorestore,openai_api_key) 
-
-    st.session_state.processComplete = True
+        st.session_state.processComplete = True
 
     if 'messages' not in st.session_state:
         st.session_state['messages'] = [{"role": "assistant", 
@@ -124,6 +115,7 @@ def get_text(docs):
 
         doc_list.extend(documents)
     return doc_list
+
 
 def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(
